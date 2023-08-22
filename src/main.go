@@ -216,6 +216,7 @@ func scrape_moves(input *ini.File) []Move {
         if statedef_reached {
             var move Move
             var is_changestate bool = true
+            var has_command = false
 
             // trims "State -1," and then trims any whitespace
             move.name = strings.TrimSpace(sect_name[strings.Index(sect_name, ",")+1:])
@@ -253,6 +254,8 @@ func scrape_moves(input *ini.File) []Move {
                             }
                             trigger_has_command = false
                         }
+
+                        has_command = true
                     }
 
                     if trigger_has_command || trigger_has_power {
@@ -262,7 +265,7 @@ func scrape_moves(input *ini.File) []Move {
                 }
             }
 
-            if is_changestate {
+            if is_changestate && has_command {
                 if opt_debug {
                     fmt.Println("Found move:", move)
                 }
