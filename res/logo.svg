@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="290.97293mm"
+   height="75.474495mm"
+   viewBox="0 0 290.97293 75.474495"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.2.2 (732a01da63, 2022-12-09)"
+   sodipodi:docname="logo.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <title
+     id="title9013">Iguana Logo</title>
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#505050"
+     bordercolor="#eeeeee"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#505050"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="1.0544998"
+     inkscape:cx="513.03945"
+     inkscape:cy="183.97348"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs2">
+    <inkscape:path-effect
+       effect="simplify"
+       id="path-effect3291"
+       is_visible="true"
+       lpeversion="1"
+       steps="2"
+       threshold="0.025"
+       smooth_angles="120"
+       helper_size="75"
+       simplify_individual_paths="false"
+       simplify_just_coalesce="false" />
+    <inkscape:path-effect
+       effect="simplify"
+       id="path-effect3289"
+       is_visible="true"
+       lpeversion="1"
+       steps="6"
+       threshold="0.1"
+       smooth_angles="150"
+       helper_size="2"
+       simplify_individual_paths="false"
+       simplify_just_coalesce="false" />
+  </defs>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-48.635904,-25.979678)">
+    <path
+       style="fill:#00ff00;stroke:#000a17;stroke-width:11.112;stroke-dasharray:none;paint-order:stroke fill markers;stroke-opacity:1"
+       d="M 103.79032,43.112904 C 85.774115,44.405551 62.576343,49.489215 55.557019,66.074708 48.29589,83.231547 70.993453,84.089322 81.36713,82.698695 c 12.579281,-1.686296 24.39801,-4.227852 31.36212,6.184377 10.41306,15.568838 28.71418,3.136134 26.42221,-16.599766 -1.60672,-13.835301 -10.91829,-27.084269 -25.83996,-29.119802 -3.15377,-0.43022 -6.36264,-0.436418 -9.52118,-0.0506 z"
+       id="path1676"
+       sodipodi:nodetypes="csssssssssscsssssssssscsssssscssssssscsssssssssscsssssssssssssssscsssssssssssssssssssssssssssssscsssssssc" />
+    <path
+       style="fill:#00ff00;stroke:#000a17;stroke-width:11.7472;stroke-linecap:butt;stroke-linejoin:round;stroke-dasharray:none;paint-order:stroke fill markers;stroke-opacity:1"
+       d="M 110.69923,49.338512 C 130.60493,43.411915 65.710489,16.254984 76.775454,44.757195"
+       id="path2404"
+       sodipodi:nodetypes="cscsscsscscssssssssccc" />
+    <ellipse
+       style="fill:#ffff00;stroke:#000a17;stroke-width:10.32;stroke-linecap:butt;stroke-linejoin:round;stroke-dasharray:none;paint-order:stroke fill markers;stroke-opacity:1;fill-opacity:1"
+       id="path4071"
+       cx="94.063576"
+       cy="54.967899"
+       rx="6.779211"
+       ry="6.6302228" />
+    <g
+       aria-label="IGUANA"
+       transform="scale(1.0796891,0.92619252)"
+       id="text6331"
+       style="font-size:49.5739px;text-align:center;text-anchor:middle;fill:#00ff00;stroke:#000a17;stroke-width:6.957;stroke-linejoin:round;paint-order:stroke fill markers">
+      <path
+         d="m 143.11852,48.32181 v 39.758266 h 6.59333 V 48.32181 Z"
+         id="path9404" />
+      <path
+         d="m 175.04415,81.585896 h -13.2858 V 55.06386 h 19.87913 v -6.642902 h -26.52204 v 39.758266 h 26.52204 V 61.706762 h -13.2858 v 6.642903 h 6.69247 z"
+         id="path9406" />
+      <path
+         d="M 213.4143,87.782633 V 48.222662 h -6.59332 V 81.189304 H 193.63432 V 48.222662 h -6.59333 v 39.559971 z"
+         id="path9408" />
+      <path
+         d="M 245.33993,48.222662 H 218.8179 v 39.758266 h 6.59332 V 68.151369 h 13.33538 v 19.829559 h 6.59333 z m -6.59333,6.642902 v 6.593329 h -13.33538 v -6.593329 z"
+         id="path9410" />
+      <path
+         d="M 277.26548,87.980928 V 48.222662 h -26.52204 v 39.758266 h 6.6429 V 54.81599 h 13.28581 v 33.164938 z"
+         id="path9412" />
+      <path
+         d="m 309.19102,48.222662 h -26.52203 v 39.758266 h 6.59332 V 68.151369 h 13.33538 v 19.829559 h 6.59333 z m -6.59333,6.642902 v 6.593329 h -13.33538 v -6.593329 z"
+         id="path9414" />
+    </g>
+  </g>
+  <metadata
+     id="metadata7472">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <cc:license
+           rdf:resource="https://raw.githubusercontent.com/SuperFromND/iguana/main/LICENSE" />
+        <dc:title>Iguana Logo</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+</svg>
