@@ -429,11 +429,9 @@ func assemble_move_table(commands []Command, moves []Move) []MoveEntry {
     return movelist
 }
 
-func detokenize(input string) string {
+func detokenize(output string) string {
     // Converts command from a MoveEntry into movelist.dat glyphs
     // TODO: make this actually do something
-
-    output := input
 
     // strip unnecessary commas and spaces
     output = strings.ReplaceAll(output, ",", "")
