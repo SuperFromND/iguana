@@ -18,6 +18,7 @@ var output_file = ""
 // options
 var opt_debug = false
 var opt_keep1 = false
+var opt_keepai = false
 
 // decorative text for the console
 var logo = `
@@ -253,6 +254,32 @@ func detokenize(output string) string {
     return output
 }
 
+
+func detect_ai_command(c Command) bool {
+    // Checks if the given input command is a WinMUGEN-style AI command
+    // WinMUGEN did not yet include a trigger for checking if a character was AI-controlled,
+    // so a workaround many authors used was to make commands impossible for a human to input,
+    // the idea being that MUGEN's AI could just "activate" it on a whim without actually inputting the command
+
+    // tokenizes the input so 1 input = 1 character
+    // we also strip out any formatting/padding
+    cmd_str := tokenize(c.command)
+    cmd_str = strings.ReplaceAll(cmd_str, ",", "")
+    cmd_str = strings.ReplaceAll(cmd_str, " ", "")
+    cmd_str = strings.ReplaceAll(cmd_str, "+", "")
+
+    // the length of this string should be roughly equal to the number of inputs the game has to detect for this command
+    button_count := len(cmd_str)
+
+    // a zero-time command is physically impossible to do
+    if (c.time == 0) {return true}
+
+    // checks if there's more buttons to press than the number of frames where inputs are read as part of a command
+    if (c.time < button_count) {return true}
+
+    return false
+}
+
 func scrape_commands(input *ini.File) []Command {
     // Returns array of command-structs created from the given INI
     // This should *only* parse sections named "Command" (case insensitive)
@@ -267,6 +294,10 @@ func scrape_commands(input *ini.File) []Command {
 
         if strings.EqualFold(sect_name, "Command") {
             var cmd Command
+
+            // fallback/default value
+            // TODO: get actual value from Defaults section
+            cmd.time = 15
 
             for k := range input.Sections()[s].Keys() {
                 var key_name = input.Sections()[s].KeyStrings()[k]
@@ -411,16 +442,22 @@ func assemble_move_table(commands []Command, moves []Move) []MoveEntry {
             for c := range commands {
                 // checks if the current trigger has a corresponding command
                 if move_command == commands[c].name {
-                    if opt_debug {
-                        fmt.Println("Tokenizing string:", commands[c].command)
-                    }
+                    if (!opt_keepai && detect_ai_command(commands[c])) {
+                        if opt_debug {
+                            fmt.Println("Command detected as AI-only:", move_command)
+                        }
+                    } else {
+                        if opt_debug {
+                            fmt.Println("Tokenizing string:", commands[c].command)
+                        }
 
-                    command_text := tokenize(commands[c].command)
+                        command_text := tokenize(commands[c].command)
 
-                    if opt_debug {
-                        fmt.Println("Tokenized:", command_text)
+                        if opt_debug {
+                            fmt.Println("Tokenized:", command_text)
+                        }
+                        cmds = append(cmds, command_text)
                     }
-                    cmds = append(cmds, command_text)
                 }
             }
 
@@ -581,6 +618,7 @@ Distributed under the MIT license.
     flag.StringVar(&output_file, "o", "movelist.dat", "output filename, excluding path")
     flag.BoolVar(&opt_debug, "d", false, "enables debug logging")
     flag.BoolVar(&opt_keep1, "keep1", false, "preserve one-button, non-hyper moves")
+    flag.BoolVar(&opt_keep1, "keepai", false, "preserve move commands detected as AI-only")
 
     flag.Parse()
 
