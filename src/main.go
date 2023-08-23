@@ -658,7 +658,6 @@ Distributed under the MIT license.
 
     if info.IsDir() {
         // input is a directory, so this means we're in batch mode
-        /*
         prompt_msg := `
 Iguana has been given a directory as input and is in batch mode.
 It will attempt to process every command file in every sub-folder in this directory.
@@ -668,9 +667,26 @@ Are you sure you want to continue? `
         fmt.Printf(prompt_msg)
 
         if prompt() {
-            println("This has not yet been implemented. No files have been modified. Sorry!")
+            var cmd_file_list []string
+
+            filepath.Walk(input_file, func(path string, info os.FileInfo, err error) error {
+                if filepath.Ext(path) == ".cmd" {cmd_file_list = append(cmd_file_list, path)}
+                return nil
+            })
+
+            for i := range cmd_file_list {
+                fmt.Println("Converting file: " + cmd_file_list[i])
+                movelist := Convert(cmd_file_list[i])
+
+                if opt_debug {
+                    fmt.Println("Dump of movelist:\n" + movelist)
+                } else {
+                    path := filepath.Dir(cmd_file_list[i]) + "/" + output_file
+                    err := os.WriteFile(path, []byte(movelist), 0666)
+                    check_error(err)
+                }
+            }
         }
-        */
 
     } else {
         // check to make sure the input file has the right extension
