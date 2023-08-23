@@ -1,0 +1,71 @@
+name: Release Build
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+    - '*'
+
+jobs:
+  build-win:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Get dependencies
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.19'
+
+      - name: Build package
+        run: make release
+
+      - name: Upload package
+        uses: actions/upload-artifact@v3.1.2
+        with:
+          name: iguana-windows
+          path: bin
+          retention-days: 14
+
+  build-mac:
+    runs-on: macOS-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Get dependencies
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.19'
+
+      - name: Build package
+        run: make release
+
+      - name: Upload package
+        uses: actions/upload-artifact@v3.1.2
+        with:
+          name: iguana-mac
+          path: bin
+          retention-days: 14
+
+  build-linux:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Get dependencies
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.19'
+
+      - name: Build package
+        run: make release
+
+      - name: Upload package
+        uses: actions/upload-artifact@v3.1.2
+        with:
+          name: iguana-linux
+          path: bin
+          retention-days: 14
