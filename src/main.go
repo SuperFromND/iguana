@@ -634,6 +634,12 @@ Distributed under the MIT license.
         os.Exit(0)
     }
 
+    // check to make sure the input file has the right extension
+    if filepath.Ext(input_file) != ".cmd" {
+        fmt.Printf("Input file is not a command (.cmd) file.\n")
+        os.Exit(0)
+    }
+
     // make a note if debug logging is on
     if opt_debug {
         fmt.Println("Debug logging enabled.")
