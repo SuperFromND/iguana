@@ -457,8 +457,9 @@ func assemble_move_table(commands []Command, moves []Move) []MoveEntry {
                 nonholding = append(nonholding, cmds[e])
             }
         }
-
-        if len(nonholding) == 1 {
+        if len(nonholding) == 0 {
+            // do nothing
+        } else if len(nonholding) == 1 {
             // there's only one command, so just use it verbatim
             cmd_str = nonholding[0]
         } else {
@@ -484,7 +485,10 @@ func assemble_move_table(commands []Command, moves []Move) []MoveEntry {
 
         // fallback if, for whatever reason, we end up with no inputs at all
         if cmd_str == "" && holding == nil {
-            cmd_str = "_."
+            if opt_debug {
+                fmt.Println("Move", mv.name, "has no usable commands. Discarding...")
+            }
+            continue
         }
 
         mv.command = cmd_str
