@@ -149,6 +149,110 @@ func merge(input []string) string {
     return output
 }
 
+func tokenize (output string) string {
+    // Tokenizes the command string, replacing each multi-char button input with a single character
+    // this is done so that merging them becomes easier
+
+    // ~ indicates releasing a button, unnecessary for us so strip it
+    output = strings.ReplaceAll(output, "~", "")
+
+    // > indicates to not press any button betwen previous and next command, unnecessary for us so strip it
+    output = strings.ReplaceAll(output, ">", "")
+
+    // $ indicates to read a direction as 4-way, unnecessary for us so strip it
+    output = strings.ReplaceAll(output, "$", "")
+
+    // tokenize any held inputs into single characters
+    // note the specific characters we're using for tokenizing here are ASCII-compliant
+    output = strings.ReplaceAll(output, "/DF", "!")
+    output = strings.ReplaceAll(output, "/DB", "@")
+    output = strings.ReplaceAll(output, "/UF", "#")
+    output = strings.ReplaceAll(output, "/UB", "$")
+    output = strings.ReplaceAll(output, "/D", "%")
+    output = strings.ReplaceAll(output, "/F", "^")
+    output = strings.ReplaceAll(output, "/U", "&")
+    output = strings.ReplaceAll(output, "/B", "*")
+    output = strings.ReplaceAll(output, "/a", "(")
+    output = strings.ReplaceAll(output, "/b", ")")
+    output = strings.ReplaceAll(output, "/c", "<")
+    output = strings.ReplaceAll(output, "/x", ">")
+    output = strings.ReplaceAll(output, "/y", ";")
+    output = strings.ReplaceAll(output, "/z", "'")
+    output = strings.ReplaceAll(output, "/s", "{")
+    output = strings.ReplaceAll(output, "/d", "?")
+    output = strings.ReplaceAll(output, "/w", "=")
+
+    // tokenize regular directional inputs
+    output = strings.ReplaceAll(output, "DF", "3")
+    output = strings.ReplaceAll(output, "DB", "1")
+    output = strings.ReplaceAll(output, "UF", "9")
+    output = strings.ReplaceAll(output, "UB", "7")
+    output = strings.ReplaceAll(output, "D", "2")
+    output = strings.ReplaceAll(output, "F", "6")
+    output = strings.ReplaceAll(output, "U", "8")
+    output = strings.ReplaceAll(output, "B", "4")
+
+    return output
+}
+
+func detokenize(output string) string {
+    // Converts command from a MoveEntry string into movelist.dat glyphs
+
+    // strip unnecessary commas and spaces
+    output = strings.ReplaceAll(output, ",", "")
+    output = strings.ReplaceAll(output, " ", "")
+
+    // detokenize held directions
+    output = strings.ReplaceAll(output, "!", "~DF")
+    output = strings.ReplaceAll(output, "@", "~DB")
+    output = strings.ReplaceAll(output, "#", "~UF")
+    output = strings.ReplaceAll(output, "$", "~UB")
+    output = strings.ReplaceAll(output, "%", "~D")
+    output = strings.ReplaceAll(output, "^", "~F")
+    output = strings.ReplaceAll(output, "&", "~U")
+    output = strings.ReplaceAll(output, "*", "~B")
+    output = strings.ReplaceAll(output, "(", "a")
+    output = strings.ReplaceAll(output, ")", "b")
+    output = strings.ReplaceAll(output, "<", "c")
+    output = strings.ReplaceAll(output, ">", "x")
+    output = strings.ReplaceAll(output, ";", "y")
+    output = strings.ReplaceAll(output, "'", "z")
+    output = strings.ReplaceAll(output, "{", "s")
+    output = strings.ReplaceAll(output, "?", "d")
+    output = strings.ReplaceAll(output, "=", "w")
+
+    // TODO: detokenize option to convert common motion inputs (236 -> _QCF etc etc)
+
+    // double-taps
+    output = strings.ReplaceAll(output, "66", "_XFF")
+    output = strings.ReplaceAll(output, "44", "_XBB")
+
+    // detokenize regular directions and buttons
+    output = strings.ReplaceAll(output, "3", "_DF")
+    output = strings.ReplaceAll(output, "1", "_DB")
+    output = strings.ReplaceAll(output, "9", "_UF")
+    output = strings.ReplaceAll(output, "7", "_UB")
+    output = strings.ReplaceAll(output, "2", "_D")
+    output = strings.ReplaceAll(output, "6", "_F")
+    output = strings.ReplaceAll(output, "8", "_U")
+    output = strings.ReplaceAll(output, "4", "_B")
+
+    output = strings.ReplaceAll(output, "a", "^A")
+    output = strings.ReplaceAll(output, "b", "^B")
+    output = strings.ReplaceAll(output, "c", "^C")
+    output = strings.ReplaceAll(output, "x", "^X")
+    output = strings.ReplaceAll(output, "y", "^Y")
+    output = strings.ReplaceAll(output, "z", "^Z")
+    output = strings.ReplaceAll(output, "s", "^S")
+    output = strings.ReplaceAll(output, "d", "^D")
+    output = strings.ReplaceAll(output, "w", "^W")
+
+    // other special glyphs
+    output = strings.ReplaceAll(output, "+", "_+")
+
+    return output
+}
+
 func scrape_commands(input *ini.File) []Command {
     // Returns array of command-structs created from the given INI
     // This should *only* parse sections named "Command" (case insensitive)
@@ -307,53 +411,11 @@ func assemble_move_table(commands []Command, moves []Move) []MoveEntry {
             for c := range commands {
                 // checks if the current trigger has a corresponding command
                 if move_command == commands[c].name {
-                    command_text := commands[c].command
-
                     if opt_debug {
-                        fmt.Println("Tokenizing string:", command_text)
+                        fmt.Println("Tokenizing string:", commands[c].command)
                     }
 
-                    // ~ indicates releasing a button, unnecessary for us so strip it
-                    command_text = strings.ReplaceAll(command_text, "~", "")
-
-                    // > indicates to not press any button betwen previous and next command, unnecessary for us so strip it
-                    command_text = strings.ReplaceAll(command_text, ">", "")
-
-                    // $ indicates to read a direction as 4-way, unnecessary for us so strip it
-                    command_text = strings.ReplaceAll(command_text, "$", "")
-
-                    // tokenizes the command string, replacing each multi-char button input with a single character
-                    // this is done so that merging them becomes easier
-
-                    // tokenize any held inputs into single characters
-                    // note the specific characters we're using for tokenizing here are ASCII-compliant
-                    command_text = strings.ReplaceAll(command_text, "/DF", "!")
-                    command_text = strings.ReplaceAll(command_text, "/DB", "@")
-                    command_text = strings.ReplaceAll(command_text, "/UF", "#")
-                    command_text = strings.ReplaceAll(command_text, "/UB", "$")
-                    command_text = strings.ReplaceAll(command_text, "/D", "%")
-                    command_text = strings.ReplaceAll(command_text, "/F", "^")
-                    command_text = strings.ReplaceAll(command_text, "/U", "&")
-                    command_text = strings.ReplaceAll(command_text, "/B", "*")
-                    command_text = strings.ReplaceAll(command_text, "/a", "(")
-                    command_text = strings.ReplaceAll(command_text, "/b", ")")
-                    command_text = strings.ReplaceAll(command_text, "/c", "<")
-                    command_text = strings.ReplaceAll(command_text, "/x", ">")
-                    command_text = strings.ReplaceAll(command_text, "/y", ";")
-                    command_text = strings.ReplaceAll(command_text, "/z", "'")
-                    command_text = strings.ReplaceAll(command_text, "/s", "{")
-                    command_text = strings.ReplaceAll(command_text, "/d", "?")
-                    command_text = strings.ReplaceAll(command_text, "/w", "=")
-
-                    // tokenize regular directional inputs
-                    command_text = strings.ReplaceAll(command_text, "DF", "3")
-                    command_text = strings.ReplaceAll(command_text, "DB", "1")
-                    command_text = strings.ReplaceAll(command_text, "UF", "9")
-                    command_text = strings.ReplaceAll(command_text, "UB", "7")
-                    command_text = strings.ReplaceAll(command_text, "D", "2")
-                    command_text = strings.ReplaceAll(command_text, "F", "6")
-                    command_text = strings.ReplaceAll(command_text, "U", "8")
-                    command_text = strings.ReplaceAll(command_text, "B", "4")
+                    command_text := tokenize(commands[c].command)
 
                     if opt_debug {
                         fmt.Println("Tokenized:", command_text)
@@ -430,65 +492,6 @@ func assemble_move_table(commands []Command, moves []Move) []MoveEntry {
     }
 
     return movelist
-}
-
-func detokenize(output string) string {
-    // Converts command from a MoveEntry into movelist.dat glyphs
-    // TODO: make this actually do something
-
-    // strip unnecessary commas and spaces
-    output = strings.ReplaceAll(output, ",", "")
-    output = strings.ReplaceAll(output, " ", "")
-
-    // detokenize held directions
-    output = strings.ReplaceAll(output, "!", "~DF")
-    output = strings.ReplaceAll(output, "@", "~DB")
-    output = strings.ReplaceAll(output, "#", "~UF")
-    output = strings.ReplaceAll(output, "$", "~UB")
-    output = strings.ReplaceAll(output, "%", "~D")
-    output = strings.ReplaceAll(output, "^", "~F")
-    output = strings.ReplaceAll(output, "&", "~U")
-    output = strings.ReplaceAll(output, "*", "~B")
-    output = strings.ReplaceAll(output, "(", "a")
-    output = strings.ReplaceAll(output, ")", "b")
-    output = strings.ReplaceAll(output, "<", "c")
-    output = strings.ReplaceAll(output, ">", "x")
-    output = strings.ReplaceAll(output, ";", "y")
-    output = strings.ReplaceAll(output, "'", "z")
-    output = strings.ReplaceAll(output, "{", "s")
-    output = strings.ReplaceAll(output, "?", "d")
-    output = strings.ReplaceAll(output, "=", "w")
-
-    // TODO: detokenize option to convert common motion inputs (236 -> _QCF etc etc)
-
-    // detokenize double-taps
-    output = strings.ReplaceAll(output, "66", "_XFF")
-    output = strings.ReplaceAll(output, "44", "_XBB")
-
-    // detokenize regular directions and buttons
-    output = strings.ReplaceAll(output, "3", "_DF")
-    output = strings.ReplaceAll(output, "1", "_DB")
-    output = strings.ReplaceAll(output, "9", "_UF")
-    output = strings.ReplaceAll(output, "7", "_UB")
-    output = strings.ReplaceAll(output, "2", "_D")
-    output = strings.ReplaceAll(output, "6", "_F")
-    output = strings.ReplaceAll(output, "8", "_U")
-    output = strings.ReplaceAll(output, "4", "_B")
-
-    output = strings.ReplaceAll(output, "a", "^A")
-    output = strings.ReplaceAll(output, "b", "^B")
-    output = strings.ReplaceAll(output, "c", "^C")
-    output = strings.ReplaceAll(output, "x", "^X")
-    output = strings.ReplaceAll(output, "y", "^Y")
-    output = strings.ReplaceAll(output, "z", "^Z")
-    output = strings.ReplaceAll(output, "s", "^S")
-    output = strings.ReplaceAll(output, "d", "^D")
-    output = strings.ReplaceAll(output, "w", "^W")
-
-    // other special glyphs
-    output = strings.ReplaceAll(output, "+", "_+")
-
-    return output
 }
 
 func format_move_table(move_table []MoveEntry) string {
