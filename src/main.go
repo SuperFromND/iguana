@@ -62,6 +62,25 @@ func check_error(err error) {
     }
 }
 
+func prompt() bool {
+    // Asks for a yes-or-no prompt, exiting if answered with no
+    var confirmation string
+
+    fmt.Printf("[Y/N] ")
+    fmt.Scanln(&confirmation)
+
+    if strings.EqualFold(confirmation, "N") {
+        os.Exit(0)
+        return false
+    }
+
+    if strings.EqualFold(confirmation, "Y") {
+        return true
+    }
+
+    return false
+}
+
 func trim_command(input string) string {
     // Strips down Command="cmdinput" to just cmdinput
 
@@ -634,26 +653,47 @@ Distributed under the MIT license.
         os.Exit(0)
     }
 
-    // check to make sure the input file has the right extension
-    if filepath.Ext(input_file) != ".cmd" {
-        fmt.Printf("Input file is not a command (.cmd) file.\n")
-        os.Exit(0)
-    }
+    info, err := os.Stat(input_file)
+    check_error(err)
 
-    // make a note if debug logging is on
-    if opt_debug {
-        fmt.Println("Debug logging enabled.")
-    }
+    if info.IsDir() {
+        // input is a directory, so this means we're in batch mode
+        /*
+        prompt_msg := `
+Iguana has been given a directory as input and is in batch mode.
+It will attempt to process every command file in every sub-folder in this directory.
+Making a backup of this folder is recommended before continuing.
+Are you sure you want to continue? `
 
-    // at this point, we know we have a file, so try to do stuff with it
-    movelist := Convert(input_file)
+        fmt.Printf(prompt_msg)
 
-    if opt_debug {
-        fmt.Println("Dump of movelist:\n" + movelist)
+        if prompt() {
+            println("This has not yet been implemented. No files have been modified. Sorry!")
+        }
+        */
+
     } else {
-        path := filepath.Dir(input_file) + "/" + output_file
-        fmt.Println("Saving to path: " + path)
-        err := os.WriteFile(path, []byte(movelist), 0666)
-        check_error(err)
+        // check to make sure the input file has the right extension
+        if filepath.Ext(input_file) != ".cmd" {
+            fmt.Printf("Input file is not a command (.cmd) file.\n")
+            os.Exit(0)
+        }
+
+        // make a note if debug logging is on
+        if opt_debug {
+            fmt.Println("Debug logging enabled.")
+        }
+
+        // at this point, we know we have a file, so try to do stuff with it
+        movelist := Convert(input_file)
+
+        if opt_debug {
+            fmt.Println("Dump of movelist:\n" + movelist)
+        } else {
+            path := filepath.Dir(input_file) + "/" + output_file
+            fmt.Println("Saving to path: " + path)
+            err := os.WriteFile(path, []byte(movelist), 0666)
+            check_error(err)
+        }
     }
 }
