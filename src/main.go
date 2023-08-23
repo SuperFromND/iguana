@@ -618,7 +618,7 @@ Distributed under the MIT license.
     flag.StringVar(&output_file, "o", "movelist.dat", "output filename, excluding path")
     flag.BoolVar(&opt_debug, "d", false, "enables debug logging")
     flag.BoolVar(&opt_keep1, "keep1", false, "preserve one-button, non-hyper moves")
-    flag.BoolVar(&opt_keep1, "keepai", false, "preserve move commands detected as AI-only")
+    flag.BoolVar(&opt_keepai, "keepai", false, "preserve move commands detected as AI-only")
 
     flag.Parse()
 
