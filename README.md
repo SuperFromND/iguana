@@ -27,7 +27,7 @@ Iguana is a work in progress, so right now it isn't capable of much outside of i
 - [ ] Bulk processing of entire `chars` folders
 
 ## Building
-Iguana requires at least Go version 1.13 to compile, due to [the INI library](https://github.com/go-ini/ini) requiring it. Aside from that, you shouldn't have too much trouble building as it's otherwise standard Go.
+Iguana requires at least Go version 1.16 to compile. Aside from that, you shouldn't have too much trouble building!
 ```
 $ git clone https://github.com/SuperFromND/iguana.git
 $ cd iguana
