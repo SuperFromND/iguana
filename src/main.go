@@ -20,6 +20,7 @@ var opt_debug = false
 var opt_keep1 = false
 var opt_keepai = false
 var opt_usekp = false
+var opt_nomotions = false
 
 // decorative text for the console
 var logo = `
@@ -242,7 +243,35 @@ func detokenize(output string) string {
     output = strings.ReplaceAll(output, "?", "d")
     output = strings.ReplaceAll(output, "=", "w")
 
-    // TODO: detokenize option to convert common motion inputs (236 -> _QCF etc etc)
+    // convert groups of tokens as motion inputs
+    // the order of replacement here matters; longer substrings get matched first to prevent weirdness
+    if !opt_nomotions {
+        // full circles
+        output = strings.ReplaceAll(output, "21478963", "_FDF")
+        output = strings.ReplaceAll(output, "23698741", "_HDB")
+        output = strings.ReplaceAll(output, "89632147", "_FUF")
+        output = strings.ReplaceAll(output, "87412369", "_FUB")
+
+        // half circles
+        output = strings.ReplaceAll(output, "47896", "_HUF")
+        output = strings.ReplaceAll(output, "41236", "_HCF")
+        output = strings.ReplaceAll(output, "63214", "_HCB")
+        output = strings.ReplaceAll(output, "69874", "_HUB")
+
+        // quarter circles
+        output = strings.ReplaceAll(output, "236", "_QCF")
+        output = strings.ReplaceAll(output, "698", "_QFU")
+        output = strings.ReplaceAll(output, "874", "_QUB")
+        output = strings.ReplaceAll(output, "412", "_QBD")
+        output = strings.ReplaceAll(output, "214", "_QCB")
+        output = strings.ReplaceAll(output, "478", "_QBU")
+        output = strings.ReplaceAll(output, "896", "_QUF")
+        output = strings.ReplaceAll(output, "632", "_QFD")
+
+        // dragon punch / z-motion / shoryu / whatever else these are called
+        output = strings.ReplaceAll(output, "623", "_DSF")
+        output = strings.ReplaceAll(output, "421", "_DSB")
+    }
 
     // double-taps
     output = strings.ReplaceAll(output, "66", "_XFF")
@@ -653,6 +682,7 @@ Distributed under the MIT license.
     flag.BoolVar(&opt_debug, "d", false, "enables debug logging")
     flag.BoolVar(&opt_keep1, "keep1", false, "preserve one-button, non-hyper moves")
     flag.BoolVar(&opt_keepai, "keepai", false, "preserve move commands detected as AI-only")
+    flag.BoolVar(&opt_nomotions, "nomotions", false, "don't compress directions to motion inputs")
     flag.BoolVar(&opt_usekp, "kp", false, "use LP/MP/HP/LK/MK/HK instead of A/B/C/X/Y/Z")
 
     flag.Parse()
