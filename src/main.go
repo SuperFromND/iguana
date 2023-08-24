@@ -19,6 +19,7 @@ var output_file = ""
 var opt_debug = false
 var opt_keep1 = false
 var opt_keepai = false
+var opt_usekp = false
 
 // decorative text for the console
 var logo = `
@@ -257,12 +258,26 @@ func detokenize(output string) string {
     output = strings.ReplaceAll(output, "8", "_U")
     output = strings.ReplaceAll(output, "4", "_B")
 
-    output = strings.ReplaceAll(output, "a", "^A")
-    output = strings.ReplaceAll(output, "b", "^B")
-    output = strings.ReplaceAll(output, "c", "^C")
-    output = strings.ReplaceAll(output, "x", "^X")
-    output = strings.ReplaceAll(output, "y", "^Y")
-    output = strings.ReplaceAll(output, "z", "^Z")
+
+    if opt_usekp {
+        // use fighting-game-specific button labels
+        output = strings.ReplaceAll(output, "a", "^LK")
+        output = strings.ReplaceAll(output, "b", "^MK")
+        output = strings.ReplaceAll(output, "c", "^HK")
+        output = strings.ReplaceAll(output, "x", "^LP")
+        output = strings.ReplaceAll(output, "y", "^MP")
+        output = strings.ReplaceAll(output, "z", "^HP")
+    } else {
+        // use standard button labels
+        output = strings.ReplaceAll(output, "a", "^A")
+        output = strings.ReplaceAll(output, "b", "^B")
+        output = strings.ReplaceAll(output, "c", "^C")
+        output = strings.ReplaceAll(output, "x", "^X")
+        output = strings.ReplaceAll(output, "y", "^Y")
+        output = strings.ReplaceAll(output, "z", "^Z")
+    }
+
+    // these buttons lack FG-specific equivalents
     output = strings.ReplaceAll(output, "s", "^S")
     output = strings.ReplaceAll(output, "d", "^D")
     output = strings.ReplaceAll(output, "w", "^W")
@@ -638,6 +653,7 @@ Distributed under the MIT license.
     flag.BoolVar(&opt_debug, "d", false, "enables debug logging")
     flag.BoolVar(&opt_keep1, "keep1", false, "preserve one-button, non-hyper moves")
     flag.BoolVar(&opt_keepai, "keepai", false, "preserve move commands detected as AI-only")
+    flag.BoolVar(&opt_usekp, "kp", false, "use LP/MP/HP/LK/MK/HK instead of A/B/C/X/Y/Z")
 
     flag.Parse()
 
