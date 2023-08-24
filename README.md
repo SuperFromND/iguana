@@ -28,7 +28,7 @@ Iguana is a work in progress, so right now it's missing a lot of functionality f
   - [x] Remove one-button commands
   - [ ] Annotate palette-specific moves
   - [ ] Annotate air-state moves
-- [ ] Customizable header colors
+- [x] Customizable header colors
 - [ ] Button remapping support
 - [ ] Automatic `[Movelist]` patching of character.def files
 - [x] Bulk processing of entire `chars` folders

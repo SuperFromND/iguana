@@ -174,6 +174,21 @@ func merge(input []string) string {
     return output
 }
 
+func validate_hex_color(output string) string {
+    // Checks if the given string is a valid hex string
+    // The returned string should be A. either three or six characters long and B. consist only of hexadecimal (0-F)
+
+    // this regex matches any string containing lowercase hex digits AND only in pairs of 3 or 6
+    hexcolor_regex, _ := regexp.Compile("^([0-9a-f]{3}){1,2}$")
+
+    if hexcolor_regex.MatchString(strings.ToLower(output)) {
+        return output
+    } else {
+        // return magenta if the color is invalid hex
+        return "ff00ff"
+    }
+}
+
 func tokenize (output string) string {
     // Tokenizes the command string, replacing each multi-char button input with a single character
     // this is done so that merging them becomes easier
@@ -609,8 +624,11 @@ func format_move_table(move_table []MoveEntry) string {
         fmt.Println("Formatting move table...", "\n"+hr)
     }
 
-    special_list := "<#" + "f0f000" + ">:Special Moves:</>\n"
-    hypers_list := "<#" + "f0f000" + ">:Hyper Moves:</>\n"
+    opt_color_header = validate_hex_color(opt_color_header)
+    opt_color_power = validate_hex_color(opt_color_power)
+
+    special_list := "<#" + opt_color_header + ">:Special Moves:</>\n"
+    hypers_list := "<#" + opt_color_header + ">:Hyper Moves:</>\n"
 
     for i := range move_table {
         var entry string
@@ -625,7 +643,7 @@ func format_move_table(move_table []MoveEntry) string {
         entry = move_table[i].name
 
         if move_table[i].power != 0 {
-            entry += " <#" + "bebebe" + ">(" + strconv.Itoa(move_table[i].power) + ")</>"
+            entry += " <#" + opt_color_power + ">(" + strconv.Itoa(move_table[i].power) + ")</>"
             hypers_list += entry + "\t\t\t" + cmd + "\n"
             continue
         }
@@ -699,8 +717,8 @@ Distributed under the MIT license.
     flag.BoolVar(&opt_nomotions, "nomotions", false, "don't compress directions to motion inputs")
     flag.BoolVar(&opt_usekp, "kp", false, "use LP/MP/HP/LK/MK/HK instead of A/B/C/X/Y/Z")
     flag.BoolVar(&opt_patchdef, "def", false, "reserved (not implemented yet, does nothing)")
-    flag.StringVar(&opt_color_header, "header", "f0f000", "reserved (not implemented yet, does nothing)")
-    flag.StringVar(&opt_color_power, "power", "bebebe", "reserved (not implemented yet, does nothing)")
+    flag.StringVar(&opt_color_header, "header", "f0f000", "hex-color (without #) to use for headers")
+    flag.StringVar(&opt_color_power, "power", "bebebe", "hex-color (without #) to use for move power usage")
 
     flag.Parse()
 
