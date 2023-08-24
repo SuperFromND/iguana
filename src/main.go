@@ -86,6 +86,42 @@ func prompt() bool {
     return false
 }
 
+func label_sctrl_with_comment(input []byte) []byte {
+    // Takes an INI file's data and patches all state controllers to use the comment line above them as their name under certain conditions
+    // This practice of labelling was popularized by Fighter Factory, a common tool for character creation
+    // A very large portion of characters use this comment-as-label layout as a result, so this is pretty important!
+
+    str := string(input)
+    str_split := strings.Split(str, "\n")
+    var output string
+    var prev_str string
+
+    for i := range str_split {
+        line := strings.TrimSpace(str_split[i])
+
+        is_statedef := strings.EqualFold(line, "[Statedef -1]")
+        is_state := strings.HasPrefix(strings.ToLower(line), "[s")
+
+        // weird heuristic here, we check if the length of the statedef is higher than a ceratin #
+        // the idea is if this ends up being long enough we can safely assume it's got a name of some kind already
+        // not the most elegant way to check, but it should work well enough hopefully!
+        existing_name_length := len(strings.TrimSpace(strings.ReplaceAll(strings.ToLower(line), "[state ", "")))
+
+        if (strings.HasPrefix(prev_str, ";") && is_state && !is_statedef && existing_name_length <= 6) {
+            name := strings.TrimSpace(strings.ReplaceAll(prev_str, ";", ""))
+            output += "[State -1, " + name + "]" + "\n"
+
+            if opt_debug {fmt.Println("Using FF3 comment label: ", name)}
+        } else {
+            output += str_split[i] + "\n"
+        }
+
+        prev_str = line
+    }
+
+    return []byte(output)
+}
+
 func trim_command(input string) string {
     // Strips down Command="cmdinput" to just cmdinput
 
@@ -665,6 +701,8 @@ func Convert(path string) string {
     }
     file_data, err := os.ReadFile(path)
     check_error(err)
+
+    file_data = label_sctrl_with_comment(file_data)
 
     if opt_debug {
         fmt.Println("Parsing as INI data...")
