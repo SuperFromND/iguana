@@ -8,4 +8,4 @@ all:
 	go build -trimpath -o bin/$(EXECNAME) src/main.go
 
 release:
-	go build -trimpath -o bin/$(EXECNAME) -ldflags "-X main.version=1.0.1" src/main.go
+	go build -trimpath -o bin/$(EXECNAME) -ldflags "-X main.version=1.1.0" src/main.go
