@@ -21,6 +21,9 @@ var opt_keep1 = false
 var opt_keepai = false
 var opt_usekp = false
 var opt_nomotions = false
+var opt_patchdef = false
+var opt_color_header string
+var opt_color_power string
 
 // decorative text for the console
 var logo = `
@@ -684,6 +687,9 @@ Distributed under the MIT license.
     flag.BoolVar(&opt_keepai, "keepai", false, "preserve move commands detected as AI-only")
     flag.BoolVar(&opt_nomotions, "nomotions", false, "don't compress directions to motion inputs")
     flag.BoolVar(&opt_usekp, "kp", false, "use LP/MP/HP/LK/MK/HK instead of A/B/C/X/Y/Z")
+    flag.BoolVar(&opt_patchdef, "def", false, "reserved (not implemented yet, does nothing)")
+    flag.StringVar(&opt_color_header, "header", "f0f000", "reserved (not implemented yet, does nothing)")
+    flag.StringVar(&opt_color_power, "power", "bebebe", "reserved (not implemented yet, does nothing)")
 
     flag.Parse()
 
