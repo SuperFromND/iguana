@@ -675,7 +675,18 @@ Distributed under the MIT license.
         // Print cool logo and separation bars
         fmt.Printf(logo + "version " + version + "\n" + footer + hr + "\n")
         fmt.Printf("\nCommand arguments for IGUANA:\n")
-        flag.PrintDefaults()
+
+        flag_order := []string{"i", "o", "def", "", "keep1", "keepai", "kp", "nomotions", "header", "power", "", "d"}
+        for _, name := range flag_order {
+            if name == "" {
+                fmt.Printf("\n")
+                continue
+            }
+            flag := flag.CommandLine.Lookup(name)
+            fmt.Printf("-%-16s", flag.Name)
+            fmt.Printf("%s\n", flag.Usage)
+        }
+
         fmt.Printf("\n")
         os.Exit(0)
     }
