@@ -694,7 +694,7 @@ Distributed under the MIT license.
         fmt.Printf(logo + "version " + version + "\n" + footer + hr + "\n")
         fmt.Printf("\nCommand arguments for IGUANA:\n")
 
-        flag_order := []string{"i", "o", "def", "", "keep1", "keepai", "kp", "nomotions", "header", "power", "", "d"}
+        flag_order := []string{"i", "o", "", "keep1", "keepai", "kp", "nomotions", "header", "power", "", "d"}
         for _, name := range flag_order {
             if name == "" {
                 fmt.Printf("\n")
