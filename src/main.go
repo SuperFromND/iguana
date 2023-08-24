@@ -604,7 +604,7 @@ func Convert(path string) string {
     if opt_debug {
         fmt.Println("Parsing as INI data...")
     }
-    parsed_ini, err := ini.LoadSources(ini.LoadOptions{AllowNonUniqueSections: true, AllowShadows: true}, file_data)
+    parsed_ini, err := ini.LoadSources(ini.LoadOptions{AllowNonUniqueSections: true, AllowShadows: true, SkipUnrecognizableLines: true}, file_data)
     check_error(err)
 
     // parse sections into dedicated structs
