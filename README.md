@@ -23,7 +23,7 @@ Additional options and parameters can be found by running Iguana with either no 
 Iguana is a work in progress, so right now it's missing a lot of functionality from its web-based incarnation. Several features are planned to be implemented in the future, including:
 - [ ] Formatting options
   - [x] Use Special Button Labels
-  - [ ] Compress Motions
+  - [x] Compress Motions
   - [ ] Label Moves with Header Comments
   - [x] Remove one-button commands
   - [ ] Annotate palette-specific moves
