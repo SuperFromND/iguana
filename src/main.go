@@ -341,6 +341,12 @@ func detokenize(output string) string {
         output = strings.ReplaceAll(output, "89632147", "_FUF")
         output = strings.ReplaceAll(output, "87412369", "_FUB")
 
+        // full circles (simplified)
+        output = strings.ReplaceAll(output, "2486", "_FDF")
+        output = strings.ReplaceAll(output, "2684", "_HDB")
+        output = strings.ReplaceAll(output, "8624", "_FUF")
+        output = strings.ReplaceAll(output, "8426", "_FUB")
+
         // half circles
         output = strings.ReplaceAll(output, "47896", "_HUF")
         output = strings.ReplaceAll(output, "41236", "_HCF")
@@ -360,11 +366,11 @@ func detokenize(output string) string {
         // dragon punch / z-motion / shoryu / whatever else these are called
         output = strings.ReplaceAll(output, "623", "_DSF")
         output = strings.ReplaceAll(output, "421", "_DSB")
-    }
 
-    // double-taps
-    output = strings.ReplaceAll(output, "66", "_XFF")
-    output = strings.ReplaceAll(output, "44", "_XBB")
+        // double-taps
+        output = strings.ReplaceAll(output, "66", "_XFF")
+        output = strings.ReplaceAll(output, "44", "_XBB")
+    }
 
     // detokenize regular directions and buttons
     output = strings.ReplaceAll(output, "3", "_DF")
