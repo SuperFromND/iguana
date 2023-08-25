@@ -154,6 +154,48 @@ func get_cmd_from_def(input string) string {
     return input
 }
 
+func patch_def(def string) {
+    // loads a given def and patches it to include a movelist.dat
+    // this function runs under the assumption that the .cmd specified by the file
+    // is *also* the location where the movelist is located (which under Iguana is always true)
+
+    fmt.Printf("Patching DEF file...")
+
+    // load the DEF file and parse its INI data
+    file_data, err := os.ReadFile(def)
+    check_error(err)
+
+    parsed_ini, err := ini.LoadSources(ini.LoadOptions{AllowNonUniqueSections: true, IgnoreInlineComment: true, SkipUnrecognizableLines: true}, file_data)
+    check_error(err)
+
+    for s := range parsed_ini.Sections() {
+        var sect_name = parsed_ini.Sections()[s].Name()
+
+        // find the Files section
+        if strings.EqualFold(sect_name, "Files") {
+            for k := range parsed_ini.Sections()[s].Keys() {
+                var key_name = parsed_ini.Sections()[s].KeyStrings()[k]
+
+                if strings.EqualFold(key_name, "cmd") {
+                    // get the value of cmd
+                    cmd_value := parsed_ini.Sections()[s].Key(key_name).String()
+
+                    // strip the cmd value to just the path, and then add the output filename to it
+                    dat_value := filepath.Join(filepath.Dir(cmd_value), output_file)
+
+                    // add our new path to the INI and save it
+                    parsed_ini.Sections()[s].NewKey("movelist", dat_value)
+                    parsed_ini.SaveTo(def)
+                    return
+                }
+            }
+        }
+    }
+
+    fmt.Println("Iguana wasn't able to find the data it needed in this DEF. No changes have been made.")
+    return
+}
+
 func trim_command(input string) string {
     // Strips down Command="cmdinput" to just cmdinput
 
@@ -785,7 +827,7 @@ Distributed under the MIT license.
         fmt.Printf(logo + "version " + version + "\n" + footer + hr + "\n")
         fmt.Printf("\nCommand arguments for IGUANA:\n")
 
-        flag_order := []string{"i", "o", "", "keep1", "keepai", "kp", "nomotions", "header", "power", "", "d"}
+        flag_order := []string{"i", "o", "def", "", "keep1", "keepai", "kp", "nomotions", "header", "power", "", "d"}
         for _, name := range flag_order {
             if name == "" {
                 fmt.Printf("\n")
@@ -807,7 +849,7 @@ Distributed under the MIT license.
     flag.BoolVar(&opt_keepai, "keepai", false, "preserve move commands detected as AI-only")
     flag.BoolVar(&opt_nomotions, "nomotions", false, "don't compress directions to motion inputs")
     flag.BoolVar(&opt_usekp, "kp", false, "use LP/MP/HP/LK/MK/HK instead of A/B/C/X/Y/Z")
-    flag.BoolVar(&opt_patchdef, "def", false, "reserved (not implemented yet, does nothing)")
+    flag.BoolVar(&opt_patchdef, "def", false, "automatically patches .def files when used as input")
     flag.StringVar(&opt_color_header, "header", "f0f000", "hex-color (without #) to use for headers")
     flag.StringVar(&opt_color_power, "power", "bebebe", "hex-color (without #) to use for move power usage")
 
@@ -861,7 +903,9 @@ Are you sure you want to continue? `
         }
 
     } else {
+        var def_file string = ""
         if filepath.Ext(input_file) == ".def" {
+            def_file = input_file // save DEF path for later
             input_file = get_cmd_from_def(input_file)
         }
 
@@ -886,6 +930,15 @@ Are you sure you want to continue? `
             fmt.Println("Saving to path: " + path)
             err := os.WriteFile(path, []byte(movelist), 0666)
             check_error(err)
+
+            if def_file != "" {
+                if (opt_patchdef) {
+                    patch_def(def_file)
+                } else {
+                    fmt.Printf("Would you like to also patch the .def file to use your movelist? ")
+                    if prompt() {patch_def(def_file)}
+                }
+            }
         }
     }
 }
