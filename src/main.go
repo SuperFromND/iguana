@@ -261,8 +261,11 @@ func tokenize (output string) string {
     // Tokenizes the command string, replacing each multi-char button input with a single character
     // this is done so that merging them becomes easier
 
-    // ~ indicates releasing a button, unnecessary for us so strip it
-    output = strings.ReplaceAll(output, "~", "")
+    // strips charge input notation (a ~ character, and optionally a value right after it)
+    // IKEMEN movelists don't appear to have a standard glyph for marking charge attacks,
+    // so we just represent them as standard inputs, inaccurate as they may be
+    charge_regex, _ := regexp.Compile("~([0-9]*)")
+    output = charge_regex.ReplaceAllString(output, "")
 
     // > indicates to not press any button betwen previous and next command, unnecessary for us so strip it
     output = strings.ReplaceAll(output, ">", "")
