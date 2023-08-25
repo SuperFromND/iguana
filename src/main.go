@@ -728,7 +728,14 @@ func format_move_table(move_table []MoveEntry) string {
         special_list += entry + "\t\t\t" + cmd + "\n"
     }
 
-    return special_list + "\n" + hypers_list
+    output := special_list
+
+    // checks if the hyper list has been populated at all
+    if (hypers_list != "<#" + opt_color_header + ">:Hyper Moves:</>\n") {
+        output += "\n" + hypers_list
+    }
+
+    return output
 }
 
 func Convert(path string) string {
