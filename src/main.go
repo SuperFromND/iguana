@@ -811,7 +811,7 @@ Distributed under the MIT license.
         // input is a directory, so this means we're in batch mode
         prompt_msg := `
 Iguana has been given a directory as input and is in batch mode.
-It will attempt to process every command file in every sub-folder in this directory.
+It will attempt to process every command file specified by every definitions file in this directory.
 Making a backup of this folder is recommended before continuing.
 Are you sure you want to continue? `
 
@@ -821,7 +821,7 @@ Are you sure you want to continue? `
             var cmd_file_list []string
 
             filepath.Walk(input_file, func(path string, info os.FileInfo, err error) error {
-                if filepath.Ext(path) == ".cmd" {cmd_file_list = append(cmd_file_list, path)}
+                if filepath.Ext(path) == ".def" {cmd_file_list = append(cmd_file_list, get_cmd_from_def(path))}
                 return nil
             })
 
