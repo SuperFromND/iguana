@@ -808,10 +808,10 @@ Are you sure you want to continue? `
         }
 
     } else {
-        // check to make sure the input file has the right extension
+        // ask for confirmation if the input file doesn't use the standard extension
         if filepath.Ext(input_file) != ".cmd" {
-            fmt.Printf("Input file is not a command (.cmd) file.\n")
-            os.Exit(0)
+            fmt.Printf("This file doesn't seem to be a command (.cmd) file. Process anyways? ")
+            prompt()
         }
 
         // make a note if debug logging is on
