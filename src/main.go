@@ -122,6 +122,38 @@ func label_sctrl_with_comment(input []byte) []byte {
     return []byte(output)
 }
 
+func get_cmd_from_def(input string) string {
+    // gets a path to a command file from a given .def
+    // the .def file is the "root" of a character, and among its data is the path to the command file
+    // so when Iguana is given a .def, we try to use what the .def says is the command file
+
+    // load the DEF file and parse its INI data
+    file_data, err := os.ReadFile(input)
+    check_error(err)
+
+    parsed_ini, err := ini.LoadSources(ini.LoadOptions{AllowNonUniqueSections: true, SkipUnrecognizableLines: true}, file_data)
+    check_error(err)
+
+    for s := range parsed_ini.Sections() {
+        var sect_name = parsed_ini.Sections()[s].Name()
+
+        // find the Files section
+        if strings.EqualFold(sect_name, "Files") {
+            for k := range parsed_ini.Sections()[s].Keys() {
+                var key_name = parsed_ini.Sections()[s].KeyStrings()[k]
+
+                // get the value of cmd and use it as the input file
+                // note the Join() here; we convert the path to an absolute to prevent ambiguity
+                if strings.EqualFold(key_name, "cmd") {
+                    return filepath.Join(filepath.Dir(input), parsed_ini.Sections()[s].Key(key_name).String())
+                }
+            }
+        }
+    }
+
+    return input
+}
+
 func trim_command(input string) string {
     // Strips down Command="cmdinput" to just cmdinput
 
@@ -808,7 +840,11 @@ Are you sure you want to continue? `
         }
 
     } else {
-        // ask for confirmation if the input file doesn't use the standard extension
+        if filepath.Ext(input_file) == ".def" {
+            input_file = get_cmd_from_def(input_file)
+        }
+
+        // ask for confirmation if the input file isn't a directly-supported extension
         if filepath.Ext(input_file) != ".cmd" {
             fmt.Printf("This file doesn't seem to be a command (.cmd) file. Process anyways? ")
             prompt()
