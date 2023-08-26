@@ -882,23 +882,31 @@ Are you sure you want to continue? `
         fmt.Printf(prompt_msg)
 
         if prompt() {
-            var cmd_file_list []string
+            var def_file_list []string
 
             filepath.Walk(input_file, func(path string, info os.FileInfo, err error) error {
-                if filepath.Ext(path) == ".def" {cmd_file_list = append(cmd_file_list, get_cmd_from_def(path))}
+                if filepath.Ext(path) == ".def" {
+                    def_file_list = append(def_file_list, path)
+                }
                 return nil
             })
 
-            for i := range cmd_file_list {
-                fmt.Println("Converting file: " + cmd_file_list[i])
-                movelist := Convert(cmd_file_list[i])
+            for d := range def_file_list {
+                f := get_cmd_from_def(def_file_list[d])
+
+                fmt.Println("Converting file: " + f)
+                movelist := Convert(f)
 
                 if opt_debug {
                     fmt.Println("Dump of movelist:\n" + movelist)
                 } else {
-                    path := filepath.Dir(cmd_file_list[i]) + "/" + output_file
+                    path := filepath.Dir(f) + "/" + output_file
                     err := os.WriteFile(path, []byte(movelist), 0666)
                     check_error(err)
+
+                    if (opt_patchdef) {
+                        patch_def(def_file_list[d])
+                    }
                 }
             }
         }
