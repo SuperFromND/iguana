@@ -75,7 +75,6 @@ func prompt() bool {
     fmt.Scanln(&confirmation)
 
     if strings.EqualFold(confirmation, "N") {
-        os.Exit(0)
         return false
     }
 
@@ -909,6 +908,8 @@ Are you sure you want to continue? `
                     }
                 }
             }
+        } else {
+            os.Exit(0)
         }
 
     } else {
@@ -921,7 +922,7 @@ Are you sure you want to continue? `
         // ask for confirmation if the input file isn't a directly-supported extension
         if filepath.Ext(input_file) != ".cmd" {
             fmt.Printf("This file doesn't seem to be a command (.cmd) file. Process anyways? ")
-            prompt()
+            if !prompt() {os.Exit(0)}
         }
 
         // make a note if debug logging is on
@@ -945,7 +946,7 @@ Are you sure you want to continue? `
                     patch_def(def_file)
                 } else {
                     fmt.Printf("Would you like to also patch the .def file to use your movelist? ")
-                    if prompt() {patch_def(def_file)}
+                    if prompt() {patch_def(def_file)} else {os.Exit(0)}
                 }
             }
         }
