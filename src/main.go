@@ -874,13 +874,22 @@ Distributed under the MIT license.
         // input is a directory, so this means we're in batch mode
         prompt_msg := `
 Iguana has been given a directory as input and is in batch mode.
-It will attempt to process every command file specified by every definitions file in this directory.
+It will attempt to process every command file specified by every definition (.def) file in this directory.
 Making a backup of this folder is recommended before continuing.
 Are you sure you want to continue? `
 
         fmt.Printf(prompt_msg)
 
         if prompt() {
+            prompt_msg = `
+Iguana can also automatically patch .def files it processes to use the movelist.
+Would you like to enable this too? `
+
+            if (!opt_patchdef) {
+                fmt.Printf(prompt_msg)
+                if prompt() {opt_patchdef = true}
+            }
+
             var def_file_list []string
 
             filepath.Walk(input_file, func(path string, info os.FileInfo, err error) error {
