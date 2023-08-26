@@ -493,16 +493,26 @@ func scrape_commands(input *ini.File) []Command {
         fmt.Println("Scraping command entries...", "\n"+hr)
     }
     var cmdlist []Command
+    var default_cmd_time int = 15
 
     for s := range input.Sections() {
         var sect_name = input.Sections()[s].Name()
 
+        // check for Defaults section and get default command time
+        if strings.EqualFold(sect_name, "Defaults") {
+            for k := range input.Sections()[s].Keys() {
+                var key_name = input.Sections()[s].KeyStrings()[k]
+
+                if strings.EqualFold(key_name, "command.time") {
+                    default_cmd_time, _ = input.Sections()[s].Key(key_name).Int()
+                }
+            }
+        }
+
         if strings.EqualFold(sect_name, "Command") {
             var cmd Command
 
-            // fallback/default value
-            // TODO: get actual value from Defaults section
-            cmd.time = 15
+            cmd.time = default_cmd_time
 
             for k := range input.Sections()[s].Keys() {
                 var key_name = input.Sections()[s].KeyStrings()[k]
