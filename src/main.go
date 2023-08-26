@@ -258,6 +258,7 @@ func merge(input []string) string {
     for c := 0; c < len(input[longest_entry]); c++ {
         var compared_letter string
 
+        // iterate over every entry in the array, getting the character at index C
         for e := range input {
             var current_char string = ""
 
@@ -279,6 +280,10 @@ func merge(input []string) string {
         }
 
         output += compared_letter
+    }
+
+    if opt_debug {
+        fmt.Println("Merged as:", output)
     }
 
     return output
