@@ -899,6 +899,8 @@ Would you like to enable this too? `
                 return nil
             })
 
+            fmt.Println("Found", len(def_file_list), ".def files to convert.")
+
             for d := range def_file_list {
                 f := get_cmd_from_def(def_file_list[d])
 
