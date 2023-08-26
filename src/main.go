@@ -151,6 +151,7 @@ func get_cmd_from_def(input string) string {
         }
     }
 
+    fmt.Println("Iguana wasn't able to find a command file from this DEF.")
     return input
 }
 
@@ -159,7 +160,7 @@ func patch_def(def string) {
     // this function runs under the assumption that the .cmd specified by the file
     // is *also* the location where the movelist is located (which under Iguana is always true)
 
-    fmt.Printf("Patching DEF file...")
+    fmt.Println("Patching DEF file...")
 
     // load the DEF file and parse its INI data
     file_data, err := os.ReadFile(def)
@@ -192,7 +193,7 @@ func patch_def(def string) {
         }
     }
 
-    fmt.Println("Iguana wasn't able to find the data it needed in this DEF. No changes have been made.")
+    fmt.Println("Iguana wasn't able to find a command file from this DEF. No changes have been made.")
     return
 }
 
