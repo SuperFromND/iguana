@@ -811,11 +811,6 @@ func format_move_table(move_table []MoveEntry) string {
         // remove one-button, non-hyper commands
         if !opt_keep1 {
             if len(move_table[i].command) == 1 && move_table[i].power == 0 {continue}
-
-            // specifically strips run forward and run back, extremely common 'pseudo-moves'
-            // TODO: generalize this to remove any one-glyph moves via a regex
-            if strings.EqualFold(detokenize(move_table[i].command), "_XFF") {continue}
-            if strings.EqualFold(detokenize(move_table[i].command), "_XBB") {continue}
         }
 
         cmd := detokenize(move_table[i].held) + detokenize(move_table[i].command)
