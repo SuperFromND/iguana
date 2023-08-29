@@ -308,7 +308,7 @@ func validate_hex_color(output string) string {
     }
 }
 
-func tokenize (output string) string {
+func tokenize (input string) string {
     // Tokenizes the command string, replacing each multi-char button input with a single character
     // this is done so that merging them becomes easier
 
@@ -316,53 +316,98 @@ func tokenize (output string) string {
     // IKEMEN movelists don't appear to have a standard glyph for marking charge attacks,
     // so we just represent them as standard inputs, inaccurate as they may be
     charge_regex, _ := regexp.Compile("~([0-9]*)")
-    output = charge_regex.ReplaceAllString(output, "")
+    input = charge_regex.ReplaceAllString(input, "")
 
     // > indicates to not press any button betwen previous and next command, unnecessary for us so strip it
-    output = strings.ReplaceAll(output, ">", "")
+    input = strings.ReplaceAll(input, ">", "")
 
     // $ indicates to read a direction as 4-way, unnecessary for us so strip it
-    output = strings.ReplaceAll(output, "$", "")
+    input = strings.ReplaceAll(input, "$", "")
 
-    // tokenize any held inputs into single characters
-    // note the specific characters we're using for tokenizing here are ASCII-compliant
-    output = strings.ReplaceAll(output, "/DF", "!")
-    output = strings.ReplaceAll(output, "/DB", "@")
-    output = strings.ReplaceAll(output, "/UF", "#")
-    output = strings.ReplaceAll(output, "/UB", "$")
-    output = strings.ReplaceAll(output, "/D", "%")
-    output = strings.ReplaceAll(output, "/F", "^")
-    output = strings.ReplaceAll(output, "/U", "&")
-    output = strings.ReplaceAll(output, "/B", "*")
-    output = strings.ReplaceAll(output, "/a", "(")
-    output = strings.ReplaceAll(output, "/b", ")")
-    output = strings.ReplaceAll(output, "/c", "<")
-    output = strings.ReplaceAll(output, "/x", ">")
-    output = strings.ReplaceAll(output, "/y", ";")
-    output = strings.ReplaceAll(output, "/z", "'")
-    output = strings.ReplaceAll(output, "/s", "{")
-    output = strings.ReplaceAll(output, "/d", "?")
-    output = strings.ReplaceAll(output, "/w", "=")
+    var split_strings []string = strings.Split(input, ",")
+    var output string
 
-    // tokenize regular directional inputs
-    output = strings.ReplaceAll(output, "DF", "3")
-    output = strings.ReplaceAll(output, "DB", "1")
-    output = strings.ReplaceAll(output, "UF", "9")
-    output = strings.ReplaceAll(output, "UB", "7")
-    output = strings.ReplaceAll(output, "D", "2")
-    output = strings.ReplaceAll(output, "F", "6")
-    output = strings.ReplaceAll(output, "U", "8")
-    output = strings.ReplaceAll(output, "B", "4")
+    // split up button inputs strings and concatenate them into a new string
+    // this is so we can use more ASCII characters for tokens without causing conflicts
+    for i := range split_strings {
+        str := split_strings[i]
+
+        // tokenize any held inputs into single characters
+        // note the specific characters we're using for tokenizing here are ASCII-compliant
+        str = strings.ReplaceAll(str, "/DF", "!")
+        str = strings.ReplaceAll(str, "/DB", "@")
+        str = strings.ReplaceAll(str, "/UF", "#")
+        str = strings.ReplaceAll(str, "/UB", "$")
+        str = strings.ReplaceAll(str, "/D", "%")
+        str = strings.ReplaceAll(str, "/F", "^")
+        str = strings.ReplaceAll(str, "/U", "&")
+        str = strings.ReplaceAll(str, "/B", "*")
+        str = strings.ReplaceAll(str, "/a", "(")
+        str = strings.ReplaceAll(str, "/b", ")")
+        str = strings.ReplaceAll(str, "/c", "<")
+        str = strings.ReplaceAll(str, "/x", ">")
+        str = strings.ReplaceAll(str, "/y", ";")
+        str = strings.ReplaceAll(str, "/z", "'")
+        str = strings.ReplaceAll(str, "/s", "{")
+        str = strings.ReplaceAll(str, "/d", "?")
+        str = strings.ReplaceAll(str, "/w", "=")
+
+        // tokenize regular directional inputs
+        str = strings.ReplaceAll(str, "DF", "3")
+        str = strings.ReplaceAll(str, "DB", "1")
+        str = strings.ReplaceAll(str, "UF", "9")
+        str = strings.ReplaceAll(str, "UB", "7")
+        str = strings.ReplaceAll(str, "D", "2")
+        str = strings.ReplaceAll(str, "F", "6")
+        str = strings.ReplaceAll(str, "U", "8")
+        str = strings.ReplaceAll(str, "B", "4")
+
+        output += str
+    }
+
+    if !opt_nomotions {
+        // full circles
+        output = strings.ReplaceAll(output, "21478963", "v")
+        output = strings.ReplaceAll(output, "23698741", "n")
+        output = strings.ReplaceAll(output, "89632147", "V")
+        output = strings.ReplaceAll(output, "87412369", "N")
+
+        // full circles (simplified)
+        output = strings.ReplaceAll(output, "2486", "v")
+        output = strings.ReplaceAll(output, "2684", "n")
+        output = strings.ReplaceAll(output, "8624", "V")
+        output = strings.ReplaceAll(output, "8426", "N")
+
+        // half circles
+        output = strings.ReplaceAll(output, "47896", "f")
+        output = strings.ReplaceAll(output, "41236", "g")
+        output = strings.ReplaceAll(output, "63214", "h")
+        output = strings.ReplaceAll(output, "69874", "j")
+
+        // quarter circles
+        output = strings.ReplaceAll(output, "236", "q")
+        output = strings.ReplaceAll(output, "698", "W")
+        output = strings.ReplaceAll(output, "874", "e")
+        output = strings.ReplaceAll(output, "412", "r")
+        output = strings.ReplaceAll(output, "214", "t")
+        output = strings.ReplaceAll(output, "478", "Y")
+        output = strings.ReplaceAll(output, "896", "u")
+        output = strings.ReplaceAll(output, "632", "i")
+
+        // dragon punch / z-motion / shoryu / whatever else these are called
+        output = strings.ReplaceAll(output, "623", "o")
+        output = strings.ReplaceAll(output, "421", "p")
+
+        // double-taps
+        output = strings.ReplaceAll(output, "66", "k")
+        output = strings.ReplaceAll(output, "44", "l")
+    }
 
     return output
 }
 
 func detokenize(output string) string {
     // Converts command from a MoveEntry string into movelist.dat glyphs
-
-    // strip unnecessary commas and spaces
-    output = strings.ReplaceAll(output, ",", "")
-    output = strings.ReplaceAll(output, " ", "")
 
     // detokenize held directions
     output = strings.ReplaceAll(output, "!", "~DF")
@@ -385,43 +430,35 @@ func detokenize(output string) string {
 
     // convert groups of tokens as motion inputs
     // the order of replacement here matters; longer substrings get matched first to prevent weirdness
-    if !opt_nomotions {
-        // full circles
-        output = strings.ReplaceAll(output, "21478963", "_FDF")
-        output = strings.ReplaceAll(output, "23698741", "_HDB")
-        output = strings.ReplaceAll(output, "89632147", "_FUF")
-        output = strings.ReplaceAll(output, "87412369", "_FUB")
+    // full circles
+    output = strings.ReplaceAll(output, "v", "_FDF")
+    output = strings.ReplaceAll(output, "n", "_HDB")
+    output = strings.ReplaceAll(output, "V", "_FUF")
+    output = strings.ReplaceAll(output, "N", "_FUB")
 
-        // full circles (simplified)
-        output = strings.ReplaceAll(output, "2486", "_FDF")
-        output = strings.ReplaceAll(output, "2684", "_HDB")
-        output = strings.ReplaceAll(output, "8624", "_FUF")
-        output = strings.ReplaceAll(output, "8426", "_FUB")
+    // half circles
+    output = strings.ReplaceAll(output, "f", "_HUF")
+    output = strings.ReplaceAll(output, "g", "_HCF")
+    output = strings.ReplaceAll(output, "h", "_HCB")
+    output = strings.ReplaceAll(output, "j", "_HUB")
 
-        // half circles
-        output = strings.ReplaceAll(output, "47896", "_HUF")
-        output = strings.ReplaceAll(output, "41236", "_HCF")
-        output = strings.ReplaceAll(output, "63214", "_HCB")
-        output = strings.ReplaceAll(output, "69874", "_HUB")
+    // quarter circles
+    output = strings.ReplaceAll(output, "q", "_QCF")
+    output = strings.ReplaceAll(output, "W", "_QFU")
+    output = strings.ReplaceAll(output, "e", "_QUB")
+    output = strings.ReplaceAll(output, "r", "_QBD")
+    output = strings.ReplaceAll(output, "t", "_QCB")
+    output = strings.ReplaceAll(output, "Y", "_QBU")
+    output = strings.ReplaceAll(output, "u", "_QUF")
+    output = strings.ReplaceAll(output, "i", "_QFD")
 
-        // quarter circles
-        output = strings.ReplaceAll(output, "236", "_QCF")
-        output = strings.ReplaceAll(output, "698", "_QFU")
-        output = strings.ReplaceAll(output, "874", "_QUB")
-        output = strings.ReplaceAll(output, "412", "_QBD")
-        output = strings.ReplaceAll(output, "214", "_QCB")
-        output = strings.ReplaceAll(output, "478", "_QBU")
-        output = strings.ReplaceAll(output, "896", "_QUF")
-        output = strings.ReplaceAll(output, "632", "_QFD")
+    // dragon punch / z-motion / shoryu / whatever else these are called
+    output = strings.ReplaceAll(output, "o", "_DSF")
+    output = strings.ReplaceAll(output, "p", "_DSB")
 
-        // dragon punch / z-motion / shoryu / whatever else these are called
-        output = strings.ReplaceAll(output, "623", "_DSF")
-        output = strings.ReplaceAll(output, "421", "_DSB")
-
-        // double-taps
-        output = strings.ReplaceAll(output, "66", "_XFF")
-        output = strings.ReplaceAll(output, "44", "_XBB")
-    }
+    // double-taps
+    output = strings.ReplaceAll(output, "k", "_XFF")
+    output = strings.ReplaceAll(output, "l", "_XBB")
 
     // detokenize regular directions and buttons
     output = strings.ReplaceAll(output, "3", "_DF")
