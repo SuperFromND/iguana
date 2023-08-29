@@ -274,13 +274,17 @@ func merge(input []string) string {
             }
 
             // if this new character isn't a match with our current one, append it
-            if compared_letter != current_char {
-                compared_letter += "+" + current_char
+            if compared_letter != current_char && current_char != "" {
+                compared_letter += "/" + current_char
             }
         }
 
         output += compared_letter
     }
+
+    // cleanup string by converting multiple repeated /'s to a single one
+    extraslash_regex, _ := regexp.Compile("/{2,}")
+    output = extraslash_regex.ReplaceAllString(output, "/")
 
     if opt_debug {
         fmt.Println("Merged as:", output)
