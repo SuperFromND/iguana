@@ -273,9 +273,9 @@ func merge(input []string) string {
                 continue
             }
 
-            // if this new character isn't a match with our current one, append it
+            // if this new character isn't a match with our current one, and isn't already in the string, append it
             if compared_letter != current_char && current_char != "" {
-                compared_letter += "/" + current_char
+                if !strings.Contains(compared_letter, current_char) {compared_letter += "/" + current_char}
             }
         }
 
