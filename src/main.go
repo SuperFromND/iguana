@@ -516,8 +516,7 @@ func detect_ai_command(c Command) bool {
     // tokenizes the input so 1 input = 1 character
     // we also strip out any formatting/padding
     cmd_str := tokenize(c.command)
-    cmd_str = strings.ReplaceAll(cmd_str, ",", "")
-    cmd_str = strings.ReplaceAll(cmd_str, " ", "")
+    cmd_str = strings.ReplaceAll(cmd_str, "/", "")
     cmd_str = strings.ReplaceAll(cmd_str, "+", "")
 
     // the length of this string should be roughly equal to the number of inputs the game has to detect for this command
