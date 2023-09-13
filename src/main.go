@@ -438,7 +438,7 @@ func detokenize(output string) string {
     // the order of replacement here matters; longer substrings get matched first to prevent weirdness
     // full circles
     output = strings.ReplaceAll(output, "v", "_FDF")
-    output = strings.ReplaceAll(output, "n", "_HDB")
+    output = strings.ReplaceAll(output, "n", "_FDB")
     output = strings.ReplaceAll(output, "V", "_FUF")
     output = strings.ReplaceAll(output, "N", "_FUB")
 
