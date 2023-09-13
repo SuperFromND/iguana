@@ -68,7 +68,7 @@ func check_error(err error) {
 }
 
 func prompt() bool {
-    // Asks for a yes-or-no prompt, exiting if answered with no
+    // Asks for a yes-or-no prompt, returns bool depending on answer
     var confirmation string
 
     fmt.Printf("[Y/N] ")
@@ -82,7 +82,7 @@ func prompt() bool {
         return true
     }
 
-    return false
+    return prompt()
 }
 
 func label_sctrl_with_comment(input []byte) []byte {
