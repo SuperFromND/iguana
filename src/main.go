@@ -378,6 +378,12 @@ func tokenize (input string) string {
         output = strings.ReplaceAll(output, "8624", "V")
         output = strings.ReplaceAll(output, "8426", "N")
 
+        // full circles (non-accurate but common variations)
+        output = strings.ReplaceAll(output, "6248", "V")
+        output = strings.ReplaceAll(output, "4862", "V")
+        output = strings.ReplaceAll(output, "6842", "n")
+        output = strings.ReplaceAll(output, "4268", "n")
+
         // half circles
         output = strings.ReplaceAll(output, "47896", "f")
         output = strings.ReplaceAll(output, "41236", "g")
