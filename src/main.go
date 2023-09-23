@@ -27,12 +27,13 @@ var opt_color_power string
 
 // decorative text for the console
 var logo = `
-██╗ ██████╗ ██╗   ██╗ █████╗ ███╗   ██╗ █████╗
-██║██╔════╝ ██║   ██║██╔══██╗████╗  ██║██╔══██╗
-██║██║  ███╗██║   ██║███████║██╔██╗ ██║███████║
-██║██║   ██║██║   ██║██╔══██║██║╚██╗██║██╔══██║
-██║╚██████╔╝╚██████╔╝██║  ██║██║ ╚████║██║  ██║
-╚═╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝
+██  ████████  ██    ██  ████████  ████████  ████████
+██  ██        ██    ██  ██    ██  ██    ██  ██    ██
+██  ██  ████  ██    ██  ████████  ██    ██  ████████
+██  ██    ██  ██    ██  ██    ██  ██    ██  ██    ██
+██  ██    ██  ██    ██  ██    ██  ██    ██  ██    ██
+██  ████████  ████████  ██    ██  ██    ██  ██    ██
+
 IKEMEN GO Utility for Annotating Nonspecified Attacks
 `
 
@@ -308,7 +309,7 @@ func validate_hex_color(output string) string {
     }
 }
 
-func tokenize (input string) string {
+func tokenize(input string) string {
     // Tokenizes the command string, replacing each multi-char button input with a single character
     // this is done so that merging them becomes easier
 
