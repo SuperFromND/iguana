@@ -139,3 +139,7 @@ triggerall = power > 1000
 type = ChangeState
 triggerall = command = "360Forward"
 triggerall = command = "360Back"
+
+[State -1, Multiple Moves via &&]
+type = ChangeState
+triggerall = command = "x" && command = "y"
