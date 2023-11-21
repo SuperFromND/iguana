@@ -34,7 +34,7 @@ var logo = `
 ██  ██    ██  ██    ██  ██    ██  ██    ██  ██    ██
 ██  ████████  ████████  ██    ██  ██    ██  ██    ██
 
-IKEMEN GO Utility for Annotating Nonspecified Attacks
+Ikemen GO Utility for Annotating Nonspecified Attacks
 `
 
 var hr = "========================================================"
@@ -314,7 +314,7 @@ func tokenize(input string) string {
     // this is done so that merging them becomes easier
 
     // strips charge input notation (a ~ character, and optionally a value right after it)
-    // IKEMEN movelists don't appear to have a standard glyph for marking charge attacks,
+    // Ikemen movelists don't appear to have a standard glyph for marking charge attacks,
     // so we just represent them as standard inputs, inaccurate as they may be
     charge_regex, _ := regexp.Compile("~([0-9]*)")
     input = charge_regex.ReplaceAllString(input, "")
