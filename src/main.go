@@ -158,7 +158,7 @@ func get_cmd_from_def(input string) string {
 func patch_def(def string) {
     // loads a given def and patches it to include a movelist.dat
     // this function runs under the assumption that the .cmd specified by the file
-    // is *also* the location where the movelist is located (which under Iguana is always true)
+    // is *also* the location where the movelist is located (which via Iguana is always the case)
 
     fmt.Println("Patching DEF file...")
 
@@ -166,7 +166,7 @@ func patch_def(def string) {
     file_data, err := os.ReadFile(def)
     check_error(err)
 
-    parsed_ini, err := ini.LoadSources(ini.LoadOptions{AllowNonUniqueSections: true, IgnoreInlineComment: true, SkipUnrecognizableLines: true}, file_data)
+    parsed_ini, err := ini.LoadSources(ini.LoadOptions{AllowNonUniqueSections: true, IgnoreInlineComment: false, SkipUnrecognizableLines: true}, file_data)
     check_error(err)
 
     for s := range parsed_ini.Sections() {
@@ -187,6 +187,7 @@ func patch_def(def string) {
                     // add our new path to the INI and save it
                     parsed_ini.Sections()[s].NewKey("movelist", dat_value)
                     parsed_ini.SaveTo(def)
+                    fmt.Println("Patched: ", def)
                     return
                 }
             }
@@ -379,7 +380,7 @@ func tokenize(input string) string {
         output = strings.ReplaceAll(output, "8624", "V")
         output = strings.ReplaceAll(output, "8426", "N")
 
-        // full circles (non-accurate but common variations)
+        // full circles (truncated variations)
         output = strings.ReplaceAll(output, "6248", "V")
         output = strings.ReplaceAll(output, "4862", "V")
         output = strings.ReplaceAll(output, "6842", "n")
@@ -476,7 +477,6 @@ func detokenize(output string) string {
     output = strings.ReplaceAll(output, "6", "_F")
     output = strings.ReplaceAll(output, "8", "_U")
     output = strings.ReplaceAll(output, "4", "_B")
-
 
     if opt_usekp {
         // use fighting-game-specific button labels
