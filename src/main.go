@@ -3,12 +3,13 @@ package main
 import (
     "flag"
     "fmt"
-    "gopkg.in/ini.v1"
     "os"
-    "path/filepath"
+    "bufio"
     "regexp"
     "strconv"
     "strings"
+    "gopkg.in/ini.v1"
+    "path/filepath"
 )
 
 // basic I/O
@@ -160,13 +161,13 @@ func patch_def(def string) {
     // this function runs under the assumption that the .cmd specified by the file
     // is *also* the location where the movelist is located (which via Iguana is always the case)
 
-    fmt.Println("Patching DEF file...")
+    fmt.Println("Patching DEF file: ", def)
 
     // load the DEF file and parse its INI data
     file_data, err := os.ReadFile(def)
     check_error(err)
 
-    parsed_ini, err := ini.LoadSources(ini.LoadOptions{AllowNonUniqueSections: true, IgnoreInlineComment: false, SkipUnrecognizableLines: true}, file_data)
+    parsed_ini, err := ini.LoadSources(ini.LoadOptions{AllowNonUniqueSections: true, IgnoreInlineComment: true, SkipUnrecognizableLines: true}, file_data)
     check_error(err)
 
     for s := range parsed_ini.Sections() {
@@ -176,6 +177,7 @@ func patch_def(def string) {
         if strings.EqualFold(sect_name, "Files") {
             for k := range parsed_ini.Sections()[s].Keys() {
                 var key_name = parsed_ini.Sections()[s].KeyStrings()[k]
+                var has_movelist = parsed_ini.Sections()[s].HasKey("movelist")
 
                 if strings.EqualFold(key_name, "cmd") {
                     // get the value of cmd
@@ -185,16 +187,45 @@ func patch_def(def string) {
                     dat_value := filepath.Join(filepath.Dir(cmd_value), output_file)
 
                     // add our new path to the INI and save it
-                    parsed_ini.Sections()[s].NewKey("movelist", dat_value)
-                    parsed_ini.SaveTo(def)
-                    fmt.Println("Patched: ", def)
+                    // this code doesn't work as expected with our INI library, so we have to do a roundabout manual edit instead
+                    //parsed_ini.Sections()[s].NewKey("movelist", dat_value)
+                    //parsed_ini.SaveTo(def)
+
+                    // re-read our def file as individual lines
+                    def_file, _ := os.Open(def)
+                    scanner := bufio.NewScanner(def_file)
+                    file_lines := []string{}
+                    newfile_lines := []string{}
+
+                    for scanner.Scan() {
+                        file_lines = append(file_lines, scanner.Text())
+                    }
+
+                    // append movelist value to the [Files] section
+                    for _, line_data := range file_lines {
+                        newfile_lines = append(newfile_lines, line_data)
+                        if strings.EqualFold(line_data, "[Files]") && !has_movelist {
+                            newfile_lines = append(newfile_lines, "movelist = " + dat_value)
+                        }
+                    }
+
+                    // save the file
+                    write_to, _ := os.Create(def)
+                    writer := bufio.NewWriter(write_to)
+
+                    for _, line := range newfile_lines {
+                        writer.WriteString(line + "\n")
+                    }
+                    writer.Flush()
+
+                    fmt.Println("Patched successfully!")
                     return
                 }
             }
         }
     }
 
-    fmt.Println("Iguana wasn't able to find a command file from this DEF. No changes have been made.")
+    fmt.Println("No command file found in this DEF. No changes have been made.")
     return
 }
 
@@ -956,12 +987,13 @@ Would you like to enable this too? `
                 return nil
             })
 
-            fmt.Println("Found", len(def_file_list), ".def files to convert.")
+            fmt.Println("Found", len(def_file_list), ".def files to convert.\n")
 
             for d := range def_file_list {
+                fmt.Println("Reading:", def_file_list[d])
                 f := get_cmd_from_def(def_file_list[d])
 
-                fmt.Println("Converting file: " + f)
+                fmt.Println("Converting file:" + f)
                 movelist := Convert(f)
 
                 if opt_debug {
@@ -975,6 +1007,7 @@ Would you like to enable this too? `
                         patch_def(def_file_list[d])
                     }
                 }
+                fmt.Println("")
             }
         } else {
             os.Exit(0)
