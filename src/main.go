@@ -993,7 +993,7 @@ Would you like to enable this too? `
                 fmt.Println("Reading:", def_file_list[d])
                 f := get_cmd_from_def(def_file_list[d])
 
-                fmt.Println("Converting file:" + f)
+                fmt.Println("Converting file: " + f)
                 movelist := Convert(f)
 
                 if opt_debug {
